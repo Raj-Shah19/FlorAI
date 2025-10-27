@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "985286706056",
+    "project_id": "florai-17c50",
+    "storage_bucket": "florai-17c50.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985286706056:android:858c5e4715c0f9503f703d",
+        "android_client_info": {
+          "package_name": "in.myrajimpex.florai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYKISDJPJLB0zFzzpXG_H8n1XP8h71jLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
