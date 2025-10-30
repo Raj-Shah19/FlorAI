@@ -1,3 +1,4 @@
+import 'package:florai/screens/auth/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../utils/theme/app_colors.dart';
@@ -87,15 +88,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Container(
-                              color: AppColors.background,
-                              child: Center(
-                                child: Text(
-                                  'Main App Screen',
-                                  style: Theme.of(context).textTheme.headlineSmall,
-                                ),
-                              ),
-                            ),
+                            builder: (context) => SignInScreen()
                           ),
                         );
                       },
