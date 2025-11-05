@@ -1,5 +1,6 @@
-import 'package:florai/screens/auth/signin_screen.dart';
+import 'package:florai/services/auth_wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../utils/theme/app_colors.dart';
 import '../../utils/theme/app_theme.dart';
@@ -32,6 +33,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'image': 'assets/images/onboarding_3.png',
     },
   ];
+
+  Future<void> _setOnboardingComplete() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboarding', true);
+  }
+
+  void _navigateToSignIn() async {
+    await _setOnboardingComplete();
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AuthWrapper(),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,13 +102,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   if (_currentPage == onboardingData.length - 1)
                     ElevatedButton(
                       onPressed: () {
-                        // Navigate to main app screen
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SignInScreen()
-                          ),
-                        );
+                        _navigateToSignIn();
                       },
                       style: AppTheme.primaryButtonStyle(),
                       child: const Text('Get Started'),

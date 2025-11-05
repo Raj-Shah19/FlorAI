@@ -1,3 +1,6 @@
+import 'package:florai/services/auth_wrapper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../onboarding/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
@@ -10,7 +13,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
   late AnimationController _plantController;
   late AnimationController _fadeController;
   late AnimationController _glowController;
@@ -55,7 +59,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     _glowController = AnimationController(
       duration: const Duration(milliseconds: 1800),
       vsync: this,
-    )..repeat(reverse: true);
+    )
+      ..repeat(reverse: true);
 
     _glowAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
       CurvedAnimation(
@@ -68,7 +73,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     _particleController = AnimationController(
       duration: const Duration(milliseconds: 3500),
       vsync: this,
-    )..repeat();
+    )
+      ..repeat();
 
     _particleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -88,12 +94,26 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     _fadeController.forward();
 
     await Future.delayed(const Duration(milliseconds: 3500));
+      _navigateScreen();
+  }
+
+  void _navigateScreen() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeenOnboarding = prefs.getBool('onboarding') ?? false;
+
     if (mounted) {
-      // Navigate to home screen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OnboardingScreen()),
-      );
+      if (hasSeenOnboarding) {
+        // Use AuthWrapper to check authentication state
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AuthWrapper()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+        );
+      }
     }
   }
 
@@ -147,7 +167,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               child: SingleChildScrollView(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height,
+                    minHeight: MediaQuery
+                        .of(context)
+                        .size
+                        .height,
                   ),
                   child: IntrinsicHeight(
                     child: Column(
@@ -168,21 +191,24 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                                 boxShadow: [
                                   BoxShadow(
                                     color: AppColors.primary.withOpacity(
-                                      0.6 * _plantGrowthAnimation.value * _glowAnimation.value,
+                                      0.6 * _plantGrowthAnimation.value *
+                                          _glowAnimation.value,
                                     ),
                                     blurRadius: 100,
                                     spreadRadius: 40,
                                   ),
                                   BoxShadow(
                                     color: AppColors.primaryLight.withOpacity(
-                                      0.4 * _plantGrowthAnimation.value * _glowAnimation.value,
+                                      0.4 * _plantGrowthAnimation.value *
+                                          _glowAnimation.value,
                                     ),
                                     blurRadius: 140,
                                     spreadRadius: 25,
                                   ),
                                   BoxShadow(
                                     color: AppColors.secondary.withOpacity(
-                                      0.3 * _plantGrowthAnimation.value * _glowAnimation.value,
+                                      0.3 * _plantGrowthAnimation.value *
+                                          _glowAnimation.value,
                                     ),
                                     blurRadius: 180,
                                     spreadRadius: 15,
@@ -190,8 +216,14 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                                 ],
                               ),
                               child: SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.35, // Responsive height
-                                width: MediaQuery.of(context).size.height * 0.35,  // Keep aspect ratio
+                                height: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.35, // Responsive height
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.35, // Keep aspect ratio
                                 child: CustomPaint(
                                   painter: VibrantPlantPainter(
                                     growthProgress: _plantGrowthAnimation.value,
@@ -202,7 +234,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                           },
                         ),
 
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.06), // Responsive spacing
+                        SizedBox(height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.06), // Responsive spacing
 
                         // Animated app name with vibrant colors
                         FadeTransition(
@@ -236,15 +271,16 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
                               // Vibrant app name
                               ShaderMask(
-                                shaderCallback: (bounds) => const LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.white,
-                                    AppColors.primaryLight,
-                                    AppColors.primary,
-                                  ],
-                                ).createShader(bounds),
+                                shaderCallback: (bounds) =>
+                                    const LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.white,
+                                        AppColors.primaryLight,
+                                        AppColors.primary,
+                                      ],
+                                    ).createShader(bounds),
                                 child: const Text(
                                   'FlorAI',
                                   style: TextStyle(
@@ -424,7 +460,8 @@ class VibrantPlantPainter extends CustomPainter {
     }
   }
 
-  void _drawVibrantPlant(Canvas canvas, double centerX, double centerY, Size size) {
+  void _drawVibrantPlant(Canvas canvas, double centerX, double centerY,
+      Size size) {
     // Vibrant glowing stem
     final stemPaint = Paint()
       ..shader = const LinearGradient(
@@ -473,31 +510,71 @@ class VibrantPlantPainter extends CustomPainter {
     if (growthProgress > 0.15) {
       final leaf1Progress = ((growthProgress - 0.15) / 0.85).clamp(0.0, 1.0);
       final leaf1Size = 78 * leaf1Progress;
-      _drawVibrantLeaf(canvas, centerX, centerY, -leaf1Size, -18, leaf1Size, -28, leaf1Progress);
+      _drawVibrantLeaf(
+          canvas,
+          centerX,
+          centerY,
+          -leaf1Size,
+          -18,
+          leaf1Size,
+          -28,
+          leaf1Progress);
     }
 
     if (growthProgress > 0.3) {
       final leaf2Progress = ((growthProgress - 0.3) / 0.7).clamp(0.0, 1.0);
       final leaf2Size = 82 * leaf2Progress;
-      _drawVibrantLeaf(canvas, centerX, centerY, 0, -40, leaf2Size, 24, leaf2Progress);
+      _drawVibrantLeaf(
+          canvas,
+          centerX,
+          centerY,
+          0,
+          -40,
+          leaf2Size,
+          24,
+          leaf2Progress);
     }
 
     if (growthProgress > 0.45) {
       final leaf3Progress = ((growthProgress - 0.45) / 0.55).clamp(0.0, 1.0);
       final leaf3Size = 70 * leaf3Progress;
-      _drawVibrantLeaf(canvas, centerX, centerY, -leaf3Size, 8, leaf3Size, -30, leaf3Progress);
+      _drawVibrantLeaf(
+          canvas,
+          centerX,
+          centerY,
+          -leaf3Size,
+          8,
+          leaf3Size,
+          -30,
+          leaf3Progress);
     }
 
     if (growthProgress > 0.6) {
       final leaf4Progress = ((growthProgress - 0.6) / 0.4).clamp(0.0, 1.0);
       final leaf4Size = 75 * leaf4Progress;
-      _drawVibrantLeaf(canvas, centerX, centerY, 0, 3, leaf4Size, 26, leaf4Progress);
+      _drawVibrantLeaf(
+          canvas,
+          centerX,
+          centerY,
+          0,
+          3,
+          leaf4Size,
+          26,
+          leaf4Progress);
     }
 
     if (growthProgress > 0.75) {
       final leaf5Progress = ((growthProgress - 0.75) / 0.25).clamp(0.0, 1.0);
       final leaf5Size = 65 * leaf5Progress;
-      _drawVibrantLeaf(canvas, centerX, centerY, -leaf5Size, -55, leaf5Size, -12, leaf5Progress);
+      _drawVibrantLeaf(
+          canvas,
+          centerX,
+          centerY,
+          -leaf5Size,
+          -55,
+          leaf5Size,
+          -12,
+          leaf5Progress);
     }
 
     // Add bright flowers only when growth is more than 80%
@@ -507,7 +584,9 @@ class VibrantPlantPainter extends CustomPainter {
     }
   }
 
-  void _drawVibrantLeaf(Canvas canvas, double centerX, double centerY, double offsetX, double offsetY, double size, double rotation, double progress) {
+  void _drawVibrantLeaf(Canvas canvas, double centerX, double centerY,
+      double offsetX, double offsetY, double size, double rotation,
+      double progress) {
     canvas.save();
     canvas.translate(centerX + offsetX, centerY + offsetY);
     canvas.rotate(rotation * math.pi / 180);
@@ -517,7 +596,8 @@ class VibrantPlantPainter extends CustomPainter {
       ..shader = const RadialGradient(
         colors: [AppColors.primaryLight, AppColors.primary],
         radius: 1.2,
-      ).createShader(Rect.fromCircle(center: Offset(size * 0.4, 0), radius: size))
+      ).createShader(
+          Rect.fromCircle(center: Offset(size * 0.4, 0), radius: size))
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
 
     final leafPath = _createLeafPath(size, 0);
@@ -533,7 +613,8 @@ class VibrantPlantPainter extends CustomPainter {
           AppColors.primary,
           AppColors.primaryDark,
         ],
-      ).createShader(Rect.fromCircle(center: Offset(size * 0.4, 0), radius: size))
+      ).createShader(
+          Rect.fromCircle(center: Offset(size * 0.4, 0), radius: size))
       ..style = PaintingStyle.fill;
 
     canvas.drawPath(leafPath, leafPaint);
@@ -600,24 +681,34 @@ class VibrantPlantPainter extends CustomPainter {
     return path;
   }
 
-  void _drawVibrantFlowers(Canvas canvas, double centerX, double centerY, double progress) {
+  void _drawVibrantFlowers(Canvas canvas, double centerX, double centerY,
+      double progress) {
     // Main flower at the top of the stem (stem ends at centerY - 85)
-    _drawBrightFlower(canvas, Offset(centerX, centerY - 85), Colors.white, AppColors.accentBloom, 16 * progress, progress);
+    _drawBrightFlower(canvas, Offset(centerX, centerY - 85), Colors.white,
+        AppColors.accentBloom, 16 * progress, progress);
     if (progress > 0.4) {
-      _drawBrightFlower(canvas, Offset(centerX - 45, centerY - 65), const Color(0xFFFFE0F0), AppColors.accentPeach, 14 * (progress - 0.4) / 0.6, (progress - 0.4) / 0.6);
+      _drawBrightFlower(
+          canvas, Offset(centerX - 45, centerY - 65), const Color(0xFFFFE0F0),
+          AppColors.accentPeach, 14 * (progress - 0.4) / 0.6,
+          (progress - 0.4) / 0.6);
     }
     if (progress > 0.6) {
-      _drawBrightFlower(canvas, Offset(centerX + 50, centerY - 70), const Color(0xFFE0F0FF), AppColors.accentAqua, 15 * (progress - 0.6) / 0.4, (progress - 0.6) / 0.4);
+      _drawBrightFlower(
+          canvas, Offset(centerX + 50, centerY - 70), const Color(0xFFE0F0FF),
+          AppColors.accentAqua, 15 * (progress - 0.6) / 0.4,
+          (progress - 0.6) / 0.4);
     }
   }
 
-  void _drawBrightFlower(Canvas canvas, Offset center, Color petalColor, Color centerColor, double size, double progress) {
+  void _drawBrightFlower(Canvas canvas, Offset center, Color petalColor,
+      Color centerColor, double size, double progress) {
     canvas.save();
     canvas.translate(center.dx, center.dy);
 
     // Vibrant glow
     final glowPaint = Paint()
-      ..shader = RadialGradient(colors: [centerColor, centerColor.withOpacity(0.0)], radius: 2.0)
+      ..shader = RadialGradient(
+          colors: [centerColor, centerColor.withOpacity(0.0)], radius: 2.0)
           .createShader(Rect.fromCircle(center: Offset.zero, radius: size * 2))
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
 
@@ -630,12 +721,18 @@ class VibrantPlantPainter extends CustomPainter {
 
       final petalPaint = Paint()
         ..shader = RadialGradient(
-          colors: [petalColor, petalColor.withOpacity(0.9), petalColor.withOpacity(0.75)],
-        ).createShader(Rect.fromCircle(center: Offset(0, -size * 0.5), radius: size * 0.8));
+          colors: [
+            petalColor,
+            petalColor.withOpacity(0.9),
+            petalColor.withOpacity(0.75)
+          ],
+        ).createShader(Rect.fromCircle(
+            center: Offset(0, -size * 0.5), radius: size * 0.8));
 
       final petalPath = Path();
       petalPath.moveTo(0, 0);
-      petalPath.quadraticBezierTo(size * 0.16, -size * 0.42, size * 0.28, -size * 0.75);
+      petalPath.quadraticBezierTo(
+          size * 0.16, -size * 0.42, size * 0.28, -size * 0.75);
       petalPath.quadraticBezierTo(0, -size * 0.85, -size * 0.28, -size * 0.75);
       petalPath.quadraticBezierTo(-size * 0.16, -size * 0.42, 0, 0);
       petalPath.close();
@@ -646,8 +743,10 @@ class VibrantPlantPainter extends CustomPainter {
 
     // Bright center
     final centerPaint = Paint()
-      ..shader = RadialGradient(colors: [centerColor, centerColor.withOpacity(0.8)])
-          .createShader(Rect.fromCircle(center: Offset.zero, radius: size * 0.3));
+      ..shader = RadialGradient(
+          colors: [centerColor, centerColor.withOpacity(0.8)])
+          .createShader(
+          Rect.fromCircle(center: Offset.zero, radius: size * 0.3));
 
     canvas.drawCircle(Offset.zero, size * 0.3, centerPaint);
 
