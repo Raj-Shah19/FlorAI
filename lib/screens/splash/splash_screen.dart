@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:florai/services/auth_wrapper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,7 +9,7 @@ import 'dart:math' as math;
 import '../../utils/theme/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();

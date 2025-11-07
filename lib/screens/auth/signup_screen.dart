@@ -7,11 +7,13 @@ import '../../utils/theme/app_colors.dart';
 import '../../utils/theme/app_theme.dart';
 
 class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  SignupScreenState createState() => SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class SignupScreenState extends State<SignupScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -128,13 +130,15 @@ class _SignupScreenState extends State<SignupScreen> {
         }
 
         _showSuccessMessage("Account created successfully!");
-        print("User signed up: ${userCredential.user!.email}");
+        debugPrint("User signed up: ${userCredential.user!.email}");
 
         // Navigate to home or main screen
         // Navigator.pushReplacementNamed(context, '/home');
 
         // Or go back to sign in screen
-        Navigator.pop(context);
+        if (mounted) {
+          Navigator.pop(context);
+        }
       }
     } catch (e) {
       _showErrorMessage(e.toString());
@@ -161,7 +165,7 @@ class _SignupScreenState extends State<SignupScreen> {
         await storeUserData(userCredential.user!);
 
         _showSuccessMessage("Google sign up successful!");
-        print("User signed up: ${userCredential.user!.email}");
+        debugPrint("User signed up: ${userCredential.user!.email}");
 
         // Navigate to home or main screen
         // Navigator.pushReplacementNamed(context, '/home');

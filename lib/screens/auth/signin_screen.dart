@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:florai/screens/auth/signup_screen.dart';
 import 'package:florai/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +7,13 @@ import '../../utils/theme/app_colors.dart';
 import '../../utils/theme/app_theme.dart';
 
 class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
+
   @override
-  _SignInScreenState createState() => _SignInScreenState();
+  SignInScreenState createState() => SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -75,12 +76,14 @@ class _SignInScreenState extends State<SignInScreen> {
         await storeUserData(userCredential.user!);
 
         _showSuccessMessage("Sign in successful!");
-        print("User signed in: ${userCredential.user!.email}");
+        debugPrint("User signed in: ${userCredential.user!.email}");
 
         // Navigate to home or main screen
         // Navigator.pushReplacementNamed(context, '/home');
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        if (mounted) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        }
       }
     } catch (e) {
       _showErrorMessage(e.toString());
@@ -107,7 +110,7 @@ class _SignInScreenState extends State<SignInScreen> {
         await storeUserData(userCredential.user!);
 
         _showSuccessMessage("Google sign in successful!");
-        print("User signed in: ${userCredential.user!.email}");
+        debugPrint("User signed in: ${userCredential.user!.email}");
 
         // Navigate to home or main screen
         // Navigator.pushReplacementNamed(context, '/home');
